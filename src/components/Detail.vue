@@ -1,34 +1,22 @@
 <template>
-    <div v-if="currentTutorial" class="edit-form">
+    <div v-if="currentData" class="edit-form">
         <h4>User Data</h4>
         <form>
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" v-model="currentTutorial.name" />
+                <input type="text" class="form-control" id="name" v-model="currentData.name" />
             </div>
             <div class="form-group">
                 <label for="gender">gender</label>
-                <input type="text" class="form-control" id="gender" v-model="currentTutorial.gender" />
-            </div>
-
-            <div class="form-group">
-                <label><strong>Status:</strong></label>
-                {{ currentTutorial.published ? "Published" : "Pending" }}
+                <input type="text" class="form-control" id="gender" v-model="currentData.gender" />
             </div>
         </form>
 
-        <button class="badge badge-primary mr-2" v-if="currentTutorial.published" @click="updatePublished(false)">
-            UnPublish
-        </button>
-        <button v-else class="badge badge-primary mr-2" @click="updatePublished(true)">
-            Publish
-        </button>
-
-        <button class="badge badge-danger mr-2" @click="deleteTutorial">
+        <button class="badge badge-danger mr-2" @click="deleteUser">
             Delete
         </button>
 
-        <button type="submit" class="badge badge-success" @click="updateTutorial">
+        <button type="submit" class="badge badge-success" @click="updateUser">
             Update
         </button>
         <p>{{ message }}</p>
@@ -36,26 +24,26 @@
 
     <div v-else>
         <br />
-        <p>Please click on a Tutorial...</p>
+        <p>Please click on a User...</p>
     </div>
 </template>
 
 <script>
-import TutorialDataService from "../services/TutorialDataService";
+import UsersDataService from "../services/UsersDataService";
 
 export default {
-    name: "Detail",
+    name: "user-detail",
     data() {
         return {
-            currentTutorial: null,
+            currentData: null,
             message: ''
         };
     },
     methods: {
-        getTutorial(id) {
-            TutorialDataService.get(id)
+        getUser(id) {
+            UsersDataService.get(id)
                 .then(response => {
-                    this.currentTutorial = response.data;
+                    this.currentData = response.data;
                     console.log(response.data);
                 })
                 .catch(e => {
@@ -63,41 +51,22 @@ export default {
                 });
         },
 
-        updatePublished(status) {
-            var data = {
-                id: this.currentTutorial.id,
-                title: this.currentTutorial.title,
-                description: this.currentTutorial.description,
-                published: status
-            };
-
-            TutorialDataService.update(this.currentTutorial.id, data)
+        updateUser() {
+            UsersDataService.update(this.currentData._id, this.currentData)
                 .then(response => {
                     console.log(response.data);
-                    this.currentTutorial.published = status;
-                    this.message = 'The status was updated successfully!';
+                    this.message = 'The user was updated successfully!';
                 })
                 .catch(e => {
                     console.log(e);
                 });
         },
 
-        updateTutorial() {
-            TutorialDataService.update(this.currentTutorial.id, this.currentTutorial)
+        deleteUser() {
+            UsersDataService.delete(this.currentData._id)
                 .then(response => {
                     console.log(response.data);
-                    this.message = 'The tutorial was updated successfully!';
-                })
-                .catch(e => {
-                    console.log(e);
-                });
-        },
-
-        deleteTutorial() {
-            TutorialDataService.delete(this.currentTutorial.id)
-                .then(response => {
-                    console.log(response.data);
-                    this.$router.push({ name: "tutorials" });
+                    this.$router.push({ name: "users" });
                 })
                 .catch(e => {
                     console.log(e);
@@ -106,7 +75,7 @@ export default {
     },
     mounted() {
         this.message = '';
-        this.getTutorial(this.$route.params.id);
+        this.getUser(this.$route.params.id);
     }
 };
 </script>

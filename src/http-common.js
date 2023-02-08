@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const ep = '89a3c624fb9f43c4841ad9a207d2a25f'
+const ep = '7c1c830791024bcca619508068cd7c4d'
 export default axios.create({
   baseURL: `https://crudcrud.com/api/${ep}`,
   headers: {

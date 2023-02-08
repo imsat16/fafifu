@@ -11,39 +11,32 @@
             </div>
         </div>
         <div class="col-md-6">
-            <h4>Tutorials List</h4>
+            <h4>Users List</h4>
             <ul class="list-group">
                 <li class="list-group-item" :class="{ active: index == currentIndex }"
-                    v-for="(tutorial, index) in tutorials" :key="index" @click="setActiveTutorial(tutorial, index)">
-                    {{ tutorial.name }}
+                    v-for="(user, index) in users" :key="index" @click="setActiveUsers(user, index)">
+                    {{ user.name }}
                 </li>
             </ul>
-
-            <button class="m-3 btn btn-sm btn-danger" @click="removeAllTutorials">
-                Remove All
-            </button>
         </div>
         <div class="col-md-6">
-            <div v-if="currentTutorial">
-                <h4>Tutorial</h4>
+            <div v-if="currentUser">
+                <h4>User</h4>
                 <div>
-                    <label><strong>Name:</strong></label> {{ currentTutorial.name }}
+                    <label><strong>Name:</strong></label> {{ currentUser.name }}
                 </div>
                 <div>
-                    <label><strong>Gender:</strong></label> {{ currentTutorial.gender }}
-                </div>
-                <div>
-                    <label><strong>Status:</strong></label> {{ currentTutorial.published ? "Published" : "Pending" }}
+                    <label><strong>Gender:</strong></label> {{ currentUser.gender }}
                 </div>
                 <div>
                     <button @click="deleteUser">Delete</button>
                 </div>
 
-                <router-link :to="'/tutorials/' + currentTutorial.id" class="badge badge-warning">Edit</router-link>
+                <router-link :to="'/users/' + currentUser.id" class="badge badge-warning">Edit</router-link>
             </div>
             <div v-else>
                 <br />
-                <p>Please click on a Tutorial...</p>
+                <p>Please click on a User...</p>
             </div>
         </div>
     </div>
@@ -53,20 +46,20 @@
 import UsersDataService from "../services/UsersDataService";
 
 export default {
-    name: "tutorials-list",
+    name: "users-list",
     data() {
         return {
-            tutorials: [],
-            currentTutorial: null,
+            users: [],
+            currentUser: null,
             currentIndex: -1,
             name: ""
         };
     },
     methods: {
-        retrieveTutorials() {
+        retrieveUser() {
             UsersDataService.getAll()
                 .then(response => {
-                    this.tutorials = response.data;
+                    this.users = response.data;
                     console.log(response.data);
                 })
                 .catch(e => {
@@ -75,37 +68,26 @@ export default {
         },
 
         deleteUser(){
-            UsersDataService.delete(this.tutorials[1]._id)
-            // console.log(this.tutorials[1]._id)
+            UsersDataService.delete(this.users[1]._id)
+            // console.log(this.users[1]._id)
         },
 
         refreshList() {
-            this.retrieveTutorials();
-            this.currentTutorial = null;
+            this.retrieveUser();
+            this.currentUser = null;
             this.currentIndex = -1;
         },
 
-        setActiveTutorial(tutorial, index) {
-            this.currentTutorial = tutorial;
-            this.currentIndex = tutorial ? index : -1;
-        },
-
-        removeAllTutorials() {
-            UsersDataService.deleteAll()
-                .then(response => {
-                    console.log(response.data);
-                    this.refreshList();
-                })
-                .catch(e => {
-                    console.log(e);
-                });
+        setActiveUsers(user, index) {
+            this.currentUser = user;
+            this.currentIndex = user ? index : -1;
         },
 
         searchTitle() {
             UsersDataService.findByTitle(this.name)
                 .then(response => {
-                    this.tutorials = response.data;
-                    this.setActiveTutorial(null);
+                    this.users = response.data;
+                    this.setActiveUsers(null);
                     console.log(response.data);
                 })
                 .catch(e => {
@@ -114,7 +96,7 @@ export default {
         }
     },
     mounted() {
-        this.retrieveTutorials();
+        this.retrieveUser();
     }
 };
 </script>

@@ -3,21 +3,21 @@
         <div v-if="!submitted">
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" required v-model="tutorial.name" name="name" />
+                <input type="text" class="form-control" id="name" required v-model="user.name" name="name" />
             </div>
 
             <div class="form-group">
                 <label for="gender">gender</label>
-                <input class="form-control" id="gender" required v-model="tutorial.gender"
+                <input class="form-control" id="gender" required v-model="user.gender"
                     name="gender" />
             </div>
 
-            <button @click="saveTutorial" class="btn btn-success">Submit</button>
+            <button @click="saveUser" class="btn btn-success">Submit</button>
         </div>
 
         <div v-else>
             <h4>You submitted successfully!</h4>
-            <button class="btn btn-success" @click="newTutorial">Add</button>
+            <button class="btn btn-success" @click="newUser">Add</button>
         </div>
     </div>
 </template>
@@ -26,10 +26,10 @@
 import UsersDataService from "../services/UsersDataService";
 
 export default {
-    name: "add-tutorial",
+    name: "add-user",
     data() {
         return {
-            tutorial: {
+            user: {
                 id: null,
                 name: "",
                 gender: "",
@@ -39,15 +39,15 @@ export default {
         };
     },
     methods: {
-        saveTutorial() {
+        saveUser() {
             var data = {
-                name: this.tutorial.name,
-                gender: this.tutorial.gender
+                name: this.user.name,
+                gender: this.user.gender
             };
 
             UsersDataService.create(data)
                 .then(response => {
-                    this.tutorial.id = response.data.id;
+                    this.user.id = response.data.id;
                     console.log(response.data);
                     this.submitted = true;
                 })
@@ -56,9 +56,9 @@ export default {
                 });
         },
 
-        newTutorial() {
+        newUser() {
             this.submitted = false;
-            this.tutorial = {};
+            this.user = {};
         }
     }
 };
